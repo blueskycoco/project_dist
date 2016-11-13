@@ -1,0 +1,8 @@
+r
+h
+speed 1200
+exec device=stm32f103re
+loadbin gcc\dist.bin 0x08000000
+r
+g
+qc
