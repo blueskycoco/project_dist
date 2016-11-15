@@ -12,7 +12,6 @@ int uart_read()
 int uart_send(unsigned char byte)
 {
 	USART_SendData(USART1, byte);
-	/* Loop until the end of transmission */
 	while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
 	{}
 	return byte;
