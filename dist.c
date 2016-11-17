@@ -16,9 +16,21 @@ int uart_send(unsigned char byte)
 	{}
 	return byte;
 }
+static void NVIC_Configuration()
+{
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    /* Enable the USART1 Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
 void uart_init()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
+	//NVIC_Configuration();
 	USART_InitStructure.USART_BaudRate = 115200;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
@@ -28,14 +40,15 @@ void uart_init()
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO,ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE); 
-
+	GPIO_PinRemapConfig(GPIO_Remap_USART1, ENABLE);
+	//GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_1);
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	USART_Init(USART1,&USART_InitStructure);
-
+	//NVIC_EnableIRQ(USART1_IRQn);
 	USART_Cmd(USART1, ENABLE);
 }
 void delay_init(unsigned char SYSCLK)
